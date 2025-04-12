@@ -31,6 +31,10 @@ public class GithubService {
     String bearerToken;
     @ConfigProperty(name = "mn.khosbilegt.mmd.filepath", defaultValue = "C:\\Users\\arche\\AppData\\Roaming\\npm\\mmdc.cmd")
     String mmdPath;
+    @ConfigProperty(name = "mn.khosbilegt.base.filepath", defaultValue = "/applications/github-to-mermaid/temp/")
+    String basePath;
+    @ConfigProperty(name = "mn.khosbilegt.mmd.puppeteer", defaultValue = "puppeteer-config.json")
+    String puppeteerPath;
 
     public GithubService() {
         this.githubClient = QuarkusRestClientBuilder.newBuilder()
@@ -44,7 +48,7 @@ public class GithubService {
                 .emitOn(RUNNER_THREADS)
                 .chain(unused -> {
                     try {
-                        File tempDir = new File("temp");
+                        File tempDir = new File(basePath);
                         if (tempDir.exists()) {
                             for (File file : Objects.requireNonNull(tempDir.listFiles())) {
                                 if (file.isFile()) {
@@ -79,7 +83,7 @@ public class GithubService {
         return Uni.createFrom().voidItem()
                 .emitOn(RUNNER_THREADS)
                 .chain(() -> {
-                    File file = new File("temp/" + username + "_" + repo + ".svg");
+                    File file = new File(basePath + username + "_" + repo + ".svg");
                     if (file.exists()) {
                         try {
                             return streamFile(file);
@@ -112,7 +116,7 @@ public class GithubService {
                 .emitOn(RUNNER_THREADS)
                 .chain(unused -> {
                     try {
-                        String textFile = "temp/".concat(filePrefix).concat(".txt");
+                        String textFile = basePath.concat(filePrefix).concat(".txt");
                         File file = new File(textFile);
                         if (!file.exists()) {
                             file.getParentFile().mkdirs(); // ensure "temp/" exists
@@ -126,12 +130,14 @@ public class GithubService {
                     }
                 })
                 .chain(file -> {
-                    String outputFile = "temp/".concat(filePrefix).concat(".svg");
+                    String outputFile = basePath.concat(filePrefix).concat(".svg");
                     ProcessBuilder processBuilder = new ProcessBuilder(
                             mmdPath,
                             "-i", file.getPath(),
-                            "-o", outputFile
+                            "-o", outputFile,
+                            "--puppeteerConfigFile", puppeteerPath
                     );
+                    LOG.infov("Running mmdc with command: {0}", processBuilder.command());
                     processBuilder.inheritIO();
                     try {
                         Process process = processBuilder.start();
@@ -140,7 +146,8 @@ public class GithubService {
                     } catch (Exception e) {
                         return Uni.createFrom().failure(new RuntimeException("Failed to run mmdc", e));
                     }
-                });
+                })
+                .invoke(file -> LOG.infov("SVG file created: {0}", file.getAbsolutePath()));
     }
 
     private Uni<InputStream> streamFile(File svgFile) {
