@@ -1,8 +1,10 @@
 package mn.khosbilegt.endpoint;
 
+import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import mn.khosbilegt.client.dto.Commit;
 import mn.khosbilegt.service.MainService;
 
@@ -14,8 +16,9 @@ public class MainEndpoint {
     MainService mainService;
 
     @GET
-    @Path("/commit")
-    public List<Commit> fetchCommits() {
-        return mainService.fetchCommits();
+    @Path("/commit/{username}/{repo}")
+    public Uni<Void> fetchCommits(@PathParam("username") String username,
+                                  @PathParam("repo") String repo) {
+        return mainService.fetchCommits(username, repo);
     }
 }

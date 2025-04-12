@@ -30,4 +30,13 @@ public class GitUser {
     public void setDate(String date) {
         this.date = date;
     }
+
+    @Override
+    public String toString() {
+        return "GitUser{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", date='" + date + '\'' +
+                '}';
+    }
 }
