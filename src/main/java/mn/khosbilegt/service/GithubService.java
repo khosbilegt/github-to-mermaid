@@ -5,9 +5,11 @@ import io.quarkus.rest.client.reactive.QuarkusRestClientBuilder;
 import io.quarkus.scheduler.Scheduled;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.json.JsonObject;
 import mn.khosbilegt.client.GithubClient;
 import mn.khosbilegt.client.dto.Commit;
 import mn.khosbilegt.util.MermaidUtil;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 
 import java.io.File;
@@ -25,6 +27,10 @@ public class GithubService {
     private static final Logger LOG = Logger.getLogger("Github-to-Mermaid");
     private final GithubClient githubClient;
     private final ExecutorService RUNNER_THREADS = Executors.newFixedThreadPool(10);
+    @ConfigProperty(name = "mn.khosbilegt.github-token", defaultValue = "")
+    String bearerToken;
+    @ConfigProperty(name = "mn.khosbilegt.mmd.filepath", defaultValue = "C:\\Users\\arche\\AppData\\Roaming\\npm\\mmdc.cmd")
+    String mmdPath;
 
     public GithubService() {
         this.githubClient = QuarkusRestClientBuilder.newBuilder()
@@ -32,7 +38,7 @@ public class GithubService {
                 .build(GithubClient.class);
     }
 
-    @Scheduled(every = "1m")
+    @Scheduled(every = "5m")
     public Uni<Void> expireCache() {
         return Uni.createFrom().voidItem()
                 .emitOn(RUNNER_THREADS)
@@ -54,6 +60,17 @@ public class GithubService {
                 });
     }
 
+    public Uni<JsonObject> getRateLimit() {
+        return githubClient.getRateLimit("Bearer " + bearerToken)
+                .emitOn(RUNNER_THREADS)
+                .onItem().transform(jsonObject -> {
+                    if (jsonObject == null) {
+                        throw new RuntimeException("Failed to fetch rate limit");
+                    }
+                    return jsonObject;
+                });
+    }
+
     public Uni<InputStream> fetchCommits(String username, String repo) {
         if (username == null || repo == null) {
             return Uni.createFrom().failure(new IllegalArgumentException("Username and repo cannot be null"));
@@ -71,7 +88,7 @@ public class GithubService {
                             return Uni.createFrom().failure(new RuntimeException("Failed to read file", e));
                         }
                     } else {
-                        return githubClient.fetchCommits(username, repo)
+                        return githubClient.fetchCommits("Bearer " + bearerToken, username, repo)
                                 .emitOn(RUNNER_THREADS)
                                 .map(commits -> {
                                     Map<String, Integer> commitsByUser = new HashMap<>();
@@ -111,7 +128,7 @@ public class GithubService {
                 .chain(file -> {
                     String outputFile = "temp/".concat(filePrefix).concat(".svg");
                     ProcessBuilder processBuilder = new ProcessBuilder(
-                            "C:\\Users\\arche\\AppData\\Roaming\\npm\\mmdc.cmd",
+                            mmdPath,
                             "-i", file.getPath(),
                             "-o", outputFile
                     );
