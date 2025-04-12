@@ -5,20 +5,21 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import mn.khosbilegt.client.dto.Commit;
-import mn.khosbilegt.service.MainService;
+import jakarta.ws.rs.Produces;
+import mn.khosbilegt.service.GithubService;
 
-import java.util.List;
+import java.io.InputStream;
 
 @Path("/api")
 public class MainEndpoint {
     @Inject
-    MainService mainService;
+    GithubService mainService;
 
     @GET
     @Path("/commit/{username}/{repo}")
-    public Uni<Void> fetchCommits(@PathParam("username") String username,
-                                  @PathParam("repo") String repo) {
+    @Produces("image/svg+xml")
+    public Uni<InputStream> fetchCommits(@PathParam("username") String username,
+                                         @PathParam("repo") String repo) {
         return mainService.fetchCommits(username, repo);
     }
 }
