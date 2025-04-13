@@ -17,6 +17,12 @@ public class MainEndpoint {
     GithubService mainService;
 
     @GET
+    @Path("/test")
+    public String tet() {
+        return mainService.generateJWT();
+    }
+
+    @GET
     @Path("/commit/{username}/{repo}")
     @Produces("image/svg+xml")
     public Uni<InputStream> fetchCommits(@PathParam("username") String username,

@@ -3,7 +3,10 @@ package mn.khosbilegt.service;
 import io.quarkus.logging.Log;
 import io.quarkus.rest.client.reactive.QuarkusRestClientBuilder;
 import io.quarkus.scheduler.Scheduled;
+import io.smallrye.jwt.algorithm.SignatureAlgorithm;
+import io.smallrye.jwt.build.Jwt;
 import io.smallrye.mutiny.Uni;
+import io.vertx.ext.auth.impl.jose.JWS;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.JsonObject;
 import mn.khosbilegt.client.GithubClient;
@@ -16,6 +19,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -35,11 +39,22 @@ public class GithubService {
     String basePath;
     @ConfigProperty(name = "mn.khosbilegt.mmd.puppeteer", defaultValue = "puppeteer-config.json")
     String puppeteerPath;
+    @ConfigProperty(name = "mn.khosbilegt.github.app-id", defaultValue = "")
+    String appId;
 
     public GithubService() {
         this.githubClient = QuarkusRestClientBuilder.newBuilder()
                 .baseUri(URI.create("https://api.github.com"))
                 .build(GithubClient.class);
+    }
+
+    public String generateJWT() {
+        return Jwt.claims()
+                .issuer(appId)
+                .subject(appId)
+                .issuedAt(System.currentTimeMillis() / 1000)
+                .expiresAt((System.currentTimeMillis() / 1000) + (10 * 60)) // 10 min expiry
+                .sign();
     }
 
     @Scheduled(every = "5m")
