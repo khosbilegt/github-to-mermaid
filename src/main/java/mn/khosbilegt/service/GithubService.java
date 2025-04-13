@@ -1,6 +1,5 @@
 package mn.khosbilegt.service;
 
-import io.agroal.api.AgroalDataSource;
 import io.quarkus.rest.client.reactive.QuarkusRestClientBuilder;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.mutiny.Uni;
@@ -20,9 +19,8 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+@SuppressWarnings("CdiInjectionPointsInspection")
 @ApplicationScoped
 public class GithubService {
     private final GithubClient githubClient;
@@ -38,7 +36,7 @@ public class GithubService {
                 .build(GithubClient.class);
     }
 
-    public String generateJWT() {
+    private String generateJWT() {
         return Jwt.claims()
                 .issuer(appId)
                 .issuedAt(Instant.ofEpochMilli(System.currentTimeMillis()))
@@ -50,7 +48,8 @@ public class GithubService {
         return Uni.createFrom().voidItem();
     }
 
-    public Uni<JsonObject> getRateLimit(String userId) {
+    // TODO: Handle expiration
+    private Uni<String> getOrCreateAccessToken(String userId) {
         return fetchInstallationId(userId)
                 .chain(installationId -> {
                     if (ACCESS_TOKENS.containsKey(installationId)) {
@@ -62,18 +61,23 @@ public class GithubService {
                                     if (result != null && result.getString("token") != null) {
                                         String token = result.getString("token");
                                         ACCESS_TOKENS.put(installationId, token);
-                                        return Uni.createFrom().item(result.getString("token"));
+                                        return Uni.createFrom().item(token);
                                     } else {
                                         return Uni.createFrom().failure(new RuntimeException("Failed to fetch access token"));
                                     }
                                 });
                     }
-                })
+                });
+    }
+
+    public Uni<JsonObject> getRateLimit(String userId) {
+        return getOrCreateAccessToken(userId)
                 .chain(accessToken -> githubClient.getRateLimit("Bearer " + accessToken));
     }
 
-    public Uni<List<Commit>> fetchCommits(String userId, String username, String repo) {
-        return githubClient.fetchCommits("Bearer " + "", username, repo);
+    public Uni<List<Commit>> fetchCommits(String userId, String username, String repo, int count) {
+        return getOrCreateAccessToken(userId)
+                .chain(accessToken -> githubClient.fetchCommits("Bearer " + accessToken, username, repo, count));
     }
 
     private Uni<String> fetchInstallationId(String userId) {

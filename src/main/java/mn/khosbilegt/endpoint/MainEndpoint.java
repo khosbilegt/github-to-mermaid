@@ -16,12 +16,6 @@ public class MainEndpoint {
     @Inject
     MainService mainService;
 
-    @GET
-    @Path("/jwt")
-    public String generateJWT() {
-        return githubService.generateJWT();
-    }
-
     @POST
     @Path("/register")
     public Uni<JsonObject> registerInstallation(JsonObject jsonObject) {
@@ -38,11 +32,22 @@ public class MainEndpoint {
     }
 
     @GET
-    @Path("/{userId}/commit/{username}/{repo}.svg")
+    @Path("/{userId}/commit/pie/{username}/{repo}.svg")
     @Produces("image/svg+xml")
-    public Uni<InputStream> fetchCommits(@PathParam("userId") String userId,
+    public Uni<InputStream> fetchCommitPie(@PathParam("userId") String userId,
                                          @PathParam("username") String username,
-                                         @PathParam("repo") String repo) {
-        return mainService.fetchCommitPieChart(userId, username, repo);
+                                         @PathParam("repo") String repo,
+                                         @QueryParam("count") @DefaultValue("30") int count) {
+        return mainService.fetchCommitPieChart(userId, username, repo, count);
+    }
+
+    @GET
+    @Path("/{userId}/commit/timeline/{username}/{repo}.svg")
+    @Produces("image/svg+xml")
+    public Uni<InputStream> fetchCommitTimeline(@PathParam("userId") String userId,
+                                         @PathParam("username") String username,
+                                         @PathParam("repo") String repo,
+                                         @QueryParam("count") @DefaultValue("30") int count) {
+        return mainService.fetchCommitTimeline(userId, username, repo, count);
     }
 }

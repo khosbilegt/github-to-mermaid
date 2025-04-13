@@ -11,7 +11,9 @@ import org.jboss.logging.Logger;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -46,6 +48,27 @@ public class MermaidService {
                         return Uni.createFrom().failure(new RuntimeException("Failed to delete files", e));
                     }
                 });
+    }
+
+    public Uni<Void> createMermaidTimeline(String fileName, String title, Map<String, Set<String>> eventsByDate) {
+        StringBuilder mermaidText = new StringBuilder("timeline\n");
+        mermaidText.append("    title ").append(title).append("\n");
+
+        for (Map.Entry<String, Set<String>> entry : eventsByDate.entrySet()) {
+            String date = entry.getKey();
+            Set<String> authors = entry.getValue();
+            boolean first = true;
+            for (String author : authors) {
+                if (first) {
+                    mermaidText.append("    ").append(date).append(" : ").append(author).append("\n");
+                    first = false;
+                } else {
+                    mermaidText.append("         : ").append(author).append("\n");
+                }
+            }
+        }
+
+        return createMermaidSVG(fileName, mermaidText.toString());
     }
 
     public Uni<Void> createMermaidPieChart(String fileName, String title, String[] labels, int[] values) {

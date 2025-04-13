@@ -20,7 +20,8 @@ public interface GithubClient {
     @Path("/repos/{username}/{repo}/commits")
     Uni<List<Commit>> fetchCommits(@HeaderParam("Authorization") String bearerToken,
                                    @PathParam("username") String username,
-                                   @PathParam("repo") String repo);
+                                   @PathParam("repo") String repo,
+                                   @QueryParam("per_page") int perPage);
 
     @GET
     @Path("/rate_limit")
