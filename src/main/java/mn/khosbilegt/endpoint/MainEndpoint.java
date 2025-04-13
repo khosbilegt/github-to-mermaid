@@ -1,40 +1,48 @@
 package mn.khosbilegt.endpoint;
 
 import io.smallrye.mutiny.Uni;
+import io.vertx.core.json.JsonObject;
 import jakarta.inject.Inject;
-import jakarta.json.JsonObject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import mn.khosbilegt.service.GithubService;
+import mn.khosbilegt.service.MainService;
 
 import java.io.InputStream;
 
 @Path("/api")
 public class MainEndpoint {
     @Inject
-    GithubService mainService;
+    GithubService githubService;
+    @Inject
+    MainService mainService;
 
     @GET
-    @Path("/test")
-    public String tet() {
-        return mainService.generateJWT();
+    @Path("/jwt")
+    public String generateJWT() {
+        return githubService.generateJWT();
+    }
+
+    @POST
+    @Path("/register")
+    public Uni<JsonObject> registerInstallation(JsonObject jsonObject) {
+        return githubService.registerInstallation(jsonObject)
+                .map(unused -> new JsonObject());
     }
 
     @GET
-    @Path("/commit/{username}/{repo}")
-    @Produces("image/svg+xml")
-    public Uni<InputStream> fetchCommits(@PathParam("username") String username,
-                                         @PathParam("repo") String repo) {
-        return mainService.fetchCommits(username, repo);
-    }
-
-    @GET
-    @Path("/rate_limit")
+    @Path("/{userId}/rate_limit")
     @Produces("application/json")
-    public Uni<JsonObject> getRateLimit() {
-        return mainService.getRateLimit()
+    public Uni<JsonObject> getRateLimit(@PathParam("userId") String userId) {
+        return githubService.getRateLimit(userId)
                 .onItem().transform(jsonObject -> jsonObject);
+    }
+
+    @GET
+    @Path("/{userId}/commit/{username}/{repo}.svg")
+    @Produces("image/svg+xml")
+    public Uni<InputStream> fetchCommits(@PathParam("userId") String userId,
+                                         @PathParam("username") String username,
+                                         @PathParam("repo") String repo) {
+        return mainService.fetchCommitPieChart(userId, username, repo);
     }
 }

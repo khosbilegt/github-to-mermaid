@@ -1,11 +1,8 @@
 package mn.khosbilegt.client;
 
 import io.smallrye.mutiny.Uni;
-import jakarta.json.JsonObject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HeaderParam;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
+import io.vertx.core.json.JsonObject;
+import jakarta.ws.rs.*;
 import mn.khosbilegt.client.dto.Commit;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
@@ -14,6 +11,11 @@ import java.util.List;
 @Path("/")
 @RegisterRestClient
 public interface GithubClient {
+    @POST
+    @Path("/app/installations/{installationId}/access_tokens")
+    Uni<JsonObject> createAccessToken(@HeaderParam("Authorization") String bearerToken,
+                                      @PathParam("installationId") String installationId);
+
     @GET
     @Path("/repos/{username}/{repo}/commits")
     Uni<List<Commit>> fetchCommits(@HeaderParam("Authorization") String bearerToken,
