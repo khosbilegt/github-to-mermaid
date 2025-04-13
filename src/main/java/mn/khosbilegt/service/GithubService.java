@@ -141,10 +141,31 @@ public class GithubService {
                         }));
     }
 
+    public Uni<String> fetchUserId(String installationId) {
+        return Uni.createFrom().voidItem()
+                .emitOn(RUNNER_THREADS)
+                .chain(() -> Uni.createFrom().completionStage(
+                        dbClient.preparedQuery("SELECT * FROM g2m_user where installation_id = $1").execute(Tuple.of(installationId)).toCompletionStage()
+                ))
+                .chain(result -> {
+                    if (result.size() == 0) {
+                        return Uni.createFrom().failure(new KnownException("User not found"));
+                    } else {
+                        String userId = "";
+                        for (var row : result) {
+                            userId = row.getString("user_id");
+                        }
+                        return Uni.createFrom().item(userId);
+                    }
+                });
+    }
+
     private Uni<String> fetchInstallationId(String userId) {
-        return Uni.createFrom().completionStage(
-                        dbClient.preparedQuery("SELECT * FROM g2m_user where user_id = $1").execute(Tuple.of(userId)).toCompletionStage()
-                )
+        return Uni.createFrom().voidItem()
+                .emitOn(RUNNER_THREADS)
+                .chain(() -> Uni.createFrom().completionStage(
+                       dbClient.preparedQuery("SELECT * FROM g2m_user where user_id = $1").execute(Tuple.of(userId)).toCompletionStage()
+                ))
                 .chain(result -> {
                     if (result.size() == 0) {
                         return Uni.createFrom().failure(new KnownException("User not found"));
