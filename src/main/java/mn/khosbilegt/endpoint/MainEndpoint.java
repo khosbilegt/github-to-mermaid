@@ -17,9 +17,9 @@ public class MainEndpoint {
     MainService mainService;
 
     @POST
-    @Path("/register")
-    public Uni<JsonObject> registerInstallation(JsonObject jsonObject) {
-        return githubService.registerInstallation(jsonObject)
+    @Path("/webhook")
+    public Uni<JsonObject> listenForWebhook(JsonObject jsonObject) {
+        return githubService.listenForWebhook(jsonObject)
                 .map(unused -> new JsonObject());
     }
 

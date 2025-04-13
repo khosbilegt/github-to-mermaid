@@ -28,7 +28,7 @@ public class MermaidService {
     @ConfigProperty(name = "mn.khosbilegt.mermaid.puppeteer.config", defaultValue = "config/puppeteer-config.json")
     String puppeteerPath;
 
-    @Scheduled(every = "5m")
+    @Scheduled(every = "1h")
     public Uni<Void> expireCache() {
         return Uni.createFrom().voidItem()
                 .emitOn(RUNNER_THREADS)
