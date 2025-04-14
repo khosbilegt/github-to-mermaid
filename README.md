@@ -1,6 +1,6 @@
 # github-to-mermaid
 
-Example: ![alt](https://khosbilegt.dev/playground/mermaid/api/test/commit/timeline/quarkusio/quarkus.svg)
+Example: ![alt](https://khosbilegt.dev/playground/mermaid/api/f50058c8330b44e0ac5591d73f515397/commit/timeline/quarkusio/quarkus.svg)
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 

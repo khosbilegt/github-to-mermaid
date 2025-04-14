@@ -31,7 +31,6 @@ import java.util.concurrent.Executors;
 @SuppressWarnings("CdiInjectionPointsInspection")
 @ApplicationScoped
 public class GithubService {
-    private static final Logger LOG = Logger.getLogger("Github-to-Mermaid");
     private final ExecutorService RUNNER_THREADS = Executors.newFixedThreadPool(10);
     private final GithubClient githubClient;
     private final Map<String, String> ACCESS_TOKENS = new HashMap<>();
@@ -92,7 +91,7 @@ public class GithubService {
                                     if (result != null && result.getString("token") != null) {
                                         String token = result.getString("token");
                                         ACCESS_TOKENS.put(installationId, token);
-                                        LocalDateTime expiresAt = LocalDateTime.parse(result.getString("expires_at"), DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneOffset.UTC));
+                                        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(9);
                                         ACCESS_TOKEN_EXPIRATIONS.put(installationId, expiresAt);
                                         return Uni.createFrom().item(token);
                                     } else {

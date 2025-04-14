@@ -74,6 +74,10 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-reactive-pg-client</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.quarkiverse.qute.web</groupId>
+            <artifactId>quarkus-qute-web</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -32,7 +32,7 @@ public class MainEndpoint {
     }
 
     @GET
-    @Path("/{userId}/commit/pie/{username}/{repo}.svg")
+    @Path("/{userId}/commit/pie/{username}/{repo}")
     @Produces("image/svg+xml")
     public Uni<InputStream> fetchCommitPie(@PathParam("userId") String userId,
                                          @PathParam("username") String username,
@@ -42,7 +42,7 @@ public class MainEndpoint {
     }
 
     @GET
-    @Path("/{userId}/commit/timeline/{username}/{repo}.svg")
+    @Path("/{userId}/commit/timeline/{username}/{repo}")
     @Produces("image/svg+xml")
     public Uni<InputStream> fetchCommitTimeline(@PathParam("userId") String userId,
                                          @PathParam("username") String username,

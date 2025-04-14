@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Github to Mermaid</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: #8b949e;
+            margin-bottom: 2rem;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
+
+        .btn-install {
+            background-color: #238636;
+            color: #ffffff;
+        }
+
+        .btn-install:hover {
+            background-color: #2ea043;
+        }
+
+        .btn-github {
+            border: 1px solid #30363d;
+            background-color: transparent;
+            color: #c9d1d9;
+        }
+
+        .btn-github:hover {
+            background-color: #30363d;
+        }
+
+        .arrow {
+            margin-left: 0.5rem;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Visualize Your GitHub Commit History</h1>
+        <p>Powered by the GitHub API. Built for developers, teams, and data nerds.</p>
+        <div class="button-group">
+            <a href="https://github.com/khosbilegt/github-to-mermaid" target="_blank" class="btn btn-github">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="20" height="20"
+                    style="margin-right: 8px;">
+                    <path
+                        d="M12 0C5.37 0 0 5.373 0 12c0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.726-4.042-1.612-4.042-1.612-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.082-.729.082-.729 1.205.084 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.495.997.107-.775.418-1.305.76-1.605-2.665-.305-5.467-1.334-5.467-5.93 0-1.31.467-2.38 1.235-3.22-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.3 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.29-1.552 3.296-1.23 3.296-1.23.653 1.653.242 2.874.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.624-5.48 5.922.43.37.814 1.102.814 2.222 0 1.606-.015 2.898-.015 3.293 0 .321.217.694.825.576C20.565 21.796 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+                </svg>
+                Contribute
+            </a>
+            <a href="/install" class="btn btn-install">
+                Install App <span class="arrow">→</span>
+            </a>
+        </div>
+        <section style="max-width: 600px; margin: 4rem auto; color: #c9d1d9;">
+            <h2 style="font-size: 2rem; margin-bottom: 1.5rem;">FAQs</h2>
+
+            <details
+                style="margin-bottom: 1rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 1rem;">
+                <summary style="cursor: pointer; font-weight: 600;">Why use a Github App?</summary>
+                <p style="margin-top: 0.5rem;">
+                    By using a Github App, it solves the rate limiting issue of other similar projects. By registering
+                    an app and using your own unique id, you instead draw from your own rate limit rather than 1 global
+                    rate limit.
+                </p>
+            </details>
+
+            <details
+                style="margin-bottom: 1rem; background: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 1rem;">
+                <summary style="cursor: pointer; font-weight: 600;">How do I get my unique id?</summary>
+                <p style="margin-top: 0.5rem;">
+                    You are assigned 1 unique id every time you install the app. You may uninstall and install again to
+                    create another unique id, but previous diagrams will expire.
+                </p>
+            </details>
+        </section>
+
+    </div>
+</body>
+
+</html>
