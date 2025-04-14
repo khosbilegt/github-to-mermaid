@@ -97,8 +97,11 @@ public class GithubService {
                                 .chain(result -> {
                                     if (result != null && result.getString("token") != null) {
                                         String token = result.getString("token");
-                                        LocalDateTime expiresAt = LocalDateTime.now()
-                                                .plusSeconds(result.getInteger("expires_in"));
+                                        LocalDateTime expiresAt = LocalDateTime.parse(
+                                                result.getString("expires_at"),
+                                                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                                                        .withZone(ZoneOffset.UTC)
+                                        );
                                         ACCESS_TOKENS.put(installationId, token);
                                         ACCESS_TOKEN_EXPIRATIONS.put(installationId, expiresAt);
                                         return Uni.createFrom().item(token);
