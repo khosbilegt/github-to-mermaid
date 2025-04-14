@@ -1,3 +1,4 @@
+![alt](https://raw.githubusercontent.com/khosbilegt/github-to-mermaid/refs/heads/main/opentopr.svg)
 # Github to Mermaid
 GitHub to Mermaid turns raw commit statistics from the GitHub API into clean, shareable diagrams.
 
