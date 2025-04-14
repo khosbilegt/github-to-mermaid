@@ -45,3 +45,5 @@ https://khosbilegt.dev/mermaid/api/[USER_ID]/commit/pie/[USER]/[REPOSITORY]?coun
 Example: https://khosbilegt.dev/mermaid/api/608b731d8db64d4c94c040c0f3a12dd3/commit/pie/khosbilegt/github-to-mermaid
 
 ![alt](https://khosbilegt.dev/mermaid/api/608b731d8db64d4c94c040c0f3a12dd3/commit/pie/khosbilegt/github-to-mermaid)
+
+Any more ideas for charts? Create an issue as a feature request and I'll try to build it!
