@@ -14,6 +14,7 @@ Numbers are cool, but visuals tell a story. See trends, highlight bursts of acti
 - Outputs SVG files for easy embedding and sharing.
 
 ## 🎯 Roadmap
+- Actual filtering based on time range and aggregation.
 - Bunch of different statistics that can be extracted from Github API.
 - Support for Private Repositories.
 - Possibly adapters for different version control systems (Gitlab?).
