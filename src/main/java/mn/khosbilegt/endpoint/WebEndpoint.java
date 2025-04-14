@@ -32,7 +32,6 @@ public class WebEndpoint {
     @Path("/install")
     @Produces(MediaType.TEXT_HTML)
     public Uni<TemplateInstance> getSuccess(@QueryParam("installation_id") String installationId) {
-        System.out.println(installationId);
         return githubService.fetchUserId(installationId)
                 .map(userId -> success.data("userId", userId))
                 .onFailure().recoverWithItem(failure.data(failure));

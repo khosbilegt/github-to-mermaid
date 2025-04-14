@@ -18,7 +18,7 @@ public class ExceptionMappers {
             statusCode = RestResponse.Status.NOT_FOUND;
         }
         String message = throwable.getMessage();
-        LOG.debugv(throwable, "Exception caught by Exception Mapper: {0}", throwable.getMessage());
+        LOG.infov(throwable, "Exception caught by Exception Mapper: {0}", throwable.getMessage());
         return RestResponse.status(statusCode, new JsonObject()
                 .put("status", "FAILED")
                 .put("exception", throwable.getClass().getName())

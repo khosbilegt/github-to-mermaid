@@ -48,7 +48,14 @@ public class GithubService {
 
     @Scheduled(every = "1m")
     public void expireAccessTokens() {
-        ACCESS_TOKEN_EXPIRATIONS.entrySet().removeIf(entry -> entry.getValue().isBefore(LocalDateTime.now()));
+        for (Map.Entry<String, String> entry : ACCESS_TOKENS.entrySet()) {
+            String installationId = entry.getKey();
+            LocalDateTime expirationTime = ACCESS_TOKEN_EXPIRATIONS.get(installationId);
+            if (expirationTime != null && expirationTime.isBefore(LocalDateTime.now())) {
+                ACCESS_TOKENS.remove(installationId);
+                ACCESS_TOKEN_EXPIRATIONS.remove(installationId);
+            }
+        }
     }
 
     private String generateJWT() {
@@ -90,8 +97,9 @@ public class GithubService {
                                 .chain(result -> {
                                     if (result != null && result.getString("token") != null) {
                                         String token = result.getString("token");
+                                        LocalDateTime expiresAt = LocalDateTime.now()
+                                                .plusSeconds(result.getInteger("expires_in"));
                                         ACCESS_TOKENS.put(installationId, token);
-                                        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(9);
                                         ACCESS_TOKEN_EXPIRATIONS.put(installationId, expiresAt);
                                         return Uni.createFrom().item(token);
                                     } else {
