@@ -17,6 +17,7 @@ Numbers are cool, but visuals tell a story. See trends, highlight bursts of acti
 - Bunch of different statistics that can be extracted from Github API.
 - Support for Private Repositories.
 - Possibly adapters for different version control systems (Gitlab?).
+- Allow edge nodes to handle the Mermaid CLI (somewhat resource intensive due to using a browser under the hood) or use a different tool altogether.
 
 Any more ideas for charts? Create an issue as a feature request and I'll try to build it!
 
