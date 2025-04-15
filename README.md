@@ -39,6 +39,9 @@ By using a Github App, it solves the rate limiting issue of other similar projec
 
 Strictly for testing purposes, you may use my own User ID used in the examples below (please don't).
 
+## Note
+Due to the blazing fast nature of callbacks, you may have to refresh the redirected page to load your User ID, as the webhook may not have been processed by the time the web page opens.
+
 ## 🖼️ Diagram Examples
 ### 📆 Timeline View:
 ```
